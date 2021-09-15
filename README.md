@@ -1,6 +1,7 @@
-# React application with Express server
+# React application with Express node server
 
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app). Then an Express server was added in the `server` directory. The server is proxied via the `proxy` key in `package.json`.
+# Idea
+Starter project to deploy fullstack projects on heroku
 
 ## Using this project
 

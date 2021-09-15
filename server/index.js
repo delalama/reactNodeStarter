@@ -9,7 +9,7 @@ app.use(pino);
 app.get('/api/greeting', (req, res) => {
   const name = req.query.name || 'World';
   res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
+  res.send(JSON.stringify({ greeting: `Hola ${name}! ` }));
 });
 
 app.listen(3001, () =>

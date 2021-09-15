@@ -7,7 +7,7 @@ class App extends Component {
     super(props);
     this.state = {
       name: '',
-      greeting: ''
+      greeting: '',
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -20,8 +20,8 @@ class App extends Component {
   handleSubmit(event) {
     event.preventDefault();
     fetch(`/api/greeting?name=${encodeURIComponent(this.state.name)}`)
-      .then(response => response.json())
-      .then(state => this.setState(state));
+      .then((response) => response.json())
+      .then((state) => this.setState(state));
   }
 
   render() {
@@ -29,11 +29,13 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
           <form onSubmit={this.handleSubmit}>
+            <h1>REACT and NODE project starter</h1>
+
+            <p>Submit across express controller</p>
+
             <label htmlFor="name">Enter your name: </label>
+            
             <input
               id="name"
               type="text"
@@ -43,14 +45,8 @@ class App extends Component {
             <button type="submit">Submit</button>
           </form>
           <p>{this.state.greeting}</p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+
+          <h1>By Jesús de la Lama Amengual</h1>
         </header>
       </div>
     );
