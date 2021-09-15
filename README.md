@@ -1,4 +1,5 @@
-# React application with Express node server
+# Working hours imputter
+
 
 # Idea
 Starter project to deploy fullstack projects on heroku
