@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const pino = require('express-pino-logger')();
+const { By, until } = require('selenium-webdriver');
+let driver;
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -12,6 +14,75 @@ app.get('/api/greeting', (req, res) => {
   res.send(JSON.stringify({ greeting: `Hola ${name}! ` }));
 });
 
+async function main(name, password) {
+  var webdriver = require('selenium-webdriver');
+  driver = new webdriver.Builder()
+    .withCapabilities(webdriver.Capabilities.chrome())
+    .build();
+
+  const finalizamos = false;
+
+  await intranetLogin(name, password);
+
+  try {
+    const title = await driver.getTitle();
+    console.log(title);
+  } catch (ex) {
+    console.log('Something went wrong', ex.message);
+    driver.quit();
+  } finally {
+    // await driver.quit();
+  }
+}
+
+app.get('/api/selenium', (req, res) => {
+  try {
+    const name = req.query.name || 'jesus.delalama@altia.es';
+    const password = req.query.password || 'eMP6 ? hb]';
+
+    console.log('has introducide' + name + ' ' + password);
+
+    main(name, password).catch(console.error);
+    // browser.get('https://intrabox.altia.es/');
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 app.listen(3001, () =>
   console.log('Express server is running on localhost:3001')
 );
+
+async function intranetLogin(name, password) {
+  driver.get('https://intrabox.altia.es');
+
+  console.log('nombre: ' + name);
+  //login
+
+  waitTillByPresent(By.id('username'));
+  waitTillByPresent(By.id('password'));
+  const userNameWE = await driver.findElement(By.id('username'), 1000);
+  const passwordWE = await driver.findElement(By.id('password'), 1000);
+
+  try {
+    // fill
+    userNameWE.sendKeys(name);
+    passwordWE.sendKeys('eMP6?hb]');
+    
+    const loginBy = By.id('kc-login');
+
+    click(loginBy);
+  
+  } catch (ex) {
+    console.log('Something went wrong', ex.message);
+  }
+}
+
+async function waitTillByPresent(by) {
+  driver.wait(until.elementLocated(by), 5000);
+}
+
+async function click(by) {
+  const elem = await driver.findElement(by, 1000);
+  elem.click();
+}

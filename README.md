@@ -42,3 +42,6 @@ Starter project to deploy fullstack projects on heroku
 
    The React application will run on port 3000 and the server port 3001.
 
+
+# Desplegar en heroku
+https://stackoverflow.com/questions/58031466/how-to-run-selenium-webdriver-on-heroku-with-node-js-firefox-or-chrome
