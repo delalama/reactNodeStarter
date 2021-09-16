@@ -22,9 +22,13 @@ async function main(name, password) {
 
   const finalizamos = false;
 
-  name = normalizeStrings(name, password);
+  var credens = { name: name, password: password };
 
-  await intranetLogin(name, password);
+  credens = await normalizeStrings(credens);
+
+  console.log(credens.name);
+
+  await intranetLogin(credens);
 
   try {
     const title = await driver.getTitle();
@@ -36,17 +40,22 @@ async function main(name, password) {
     // await driver.quit();
   }
 }
-async function normalizeStrings(name, password) {
-  if (name.toLowerCase().includes('estefan')) {
+
+async function normalizeStrings(credens) {
+  if (credens.name.includes('estefan')) {
     console.log('es ella, dispara');
-    return (name = 'wtf');
+    credens.name = 'wtf';
+    console.log(credens.name);
+
+    return credens;
   }
+  return credens;
 }
 
 app.get('/api/selenium', (req, res) => {
   try {
     const name = req.query.name || 'jesus.delalama@altia.es';
-    const password = req.query.password || 'eMP6 ? hb]';
+    const password = req.query.password || 'eMP6?hb]';
 
     console.log('has introducide' + name + ' ' + password);
 
@@ -61,12 +70,10 @@ app.listen(3001, () =>
   console.log('Express server is running on localhost:3001')
 );
 
-async function intranetLogin(name, password) {
+async function intranetLogin(credens) {
   driver.get('https://intrabox.altia.es');
 
-  console.log('nombre: ' + name);
   //login
-
   waitTillByPresent(By.id('username'));
   waitTillByPresent(By.id('password'));
   const userNameWE = await driver.findElement(By.id('username'), 1000);
@@ -74,8 +81,8 @@ async function intranetLogin(name, password) {
 
   try {
     // fill
-    userNameWE.sendKeys(name);
-    passwordWE.sendKeys('eMP6?hb]');
+    userNameWE.sendKeys(credens.name);
+    passwordWE.sendKeys(credens.password);
 
     const loginBy = By.id('kc-login');
 
