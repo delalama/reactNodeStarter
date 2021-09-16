@@ -15,10 +15,27 @@ app.get('/api/greeting', (req, res) => {
 });
 
 async function main(name, password) {
-  var webdriver = require('selenium-webdriver');
-  driver = new webdriver.Builder()
-    .withCapabilities(webdriver.Capabilities.chrome())
-    .build();
+  const chrome = require('selenium-webdriver/chrome');
+  const firefox = require('selenium-webdriver/firefox');
+  const { Builder, By, Key, until } = require('selenium-webdriver');
+
+  const screen = {
+    width: 1800,
+    height: 1000,
+  };
+
+  try {
+    if (process.env.NODE_ENV === 'production') {
+      driver = new Builder()
+        .forBrowser('chrome')
+        .setChromeOptions(new chrome.Options().headless().windowSize(screen))
+        .build();
+    } else {
+      driver = new Builder().forBrowser('chrome').build();
+    }
+  } catch (error) {
+    console.log(error);
+  }
 
   const finalizamos = false;
 
@@ -54,13 +71,18 @@ async function normalizeStrings(credens) {
 
 app.get('/api/selenium', (req, res) => {
   try {
+    if (process.env.NODE_ENV === 'production') {
+      console.log('ENVIRONMENT -> estamos en production');
+    } else {
+      console.log('ENVIRONMENT -> estamos en dev');
+    }
+
     const name = req.query.name || 'jesus.delalama@altia.es';
     const password = req.query.password || 'eMP6?hb]';
 
-    console.log('has introducide' + name + ' ' + password);
+    console.log('has introducido : ' + name + ' ' + password);
 
     main(name, password).catch(console.error);
-    // browser.get('https://intrabox.altia.es/');
   } catch (error) {
     console.error(error);
   }
@@ -73,6 +95,7 @@ app.listen(3001, () =>
 async function intranetLogin(credens) {
   driver.get('https://intrabox.altia.es');
 
+  console.log('Introduciendo credenciales');
   //login
   waitTillByPresent(By.id('username'));
   waitTillByPresent(By.id('password'));
@@ -84,7 +107,11 @@ async function intranetLogin(credens) {
     userNameWE.sendKeys(credens.name);
     passwordWE.sendKeys(credens.password);
 
+    console.log('Credenciales introducidas');
+
     const loginBy = By.id('kc-login');
+
+    console.log('Botón login apretado');
 
     click(loginBy);
   } catch (ex) {

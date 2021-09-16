@@ -45,3 +45,9 @@ Starter project to deploy fullstack projects on heroku
 
 # Desplegar en heroku
 https://stackoverflow.com/questions/58031466/how-to-run-selenium-webdriver-on-heroku-with-node-js-firefox-or-chrome
+
+
+VARIABLE DE ENTORNO CREADA EN EL SCRIPT DEL PACKAGE genera variables globales para generar hilos
+  console.log(process.env.NODE_ENV === 'production');
+
+  CROSSENV -> librería para settear variables globales en otros SO's
