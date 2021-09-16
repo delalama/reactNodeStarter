@@ -50,6 +50,7 @@ class App extends Component {
               onChange={this.handleChange}
             />
 
+            <h1></h1>
             <label htmlFor="password">Enter your password: </label>
             <input
               id="password"
@@ -59,7 +60,10 @@ class App extends Component {
               onChange={this.handleChange}
             />
 
-            <button type="submit">Submit</button>
+            
+            <h1></h1>
+            
+            <button type="submit">GO</button>
           </form>
 
           <p>{this.state.mensaje}</p>

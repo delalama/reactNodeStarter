@@ -2,58 +2,64 @@ import * as React from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 
 const columns = [
-  { field: 'id', headerName: 'ID', width: 90 },
+  { field: 'id', headerName: 'DÍA', width: 150 },
   {
     field: 'firstName',
-    headerName: 'First name',
+    headerName: 'ENTRADA',
     width: 150,
     editable: true,
   },
   {
     field: 'lastName',
-    headerName: 'Last name',
+    headerName: 'SALIDA',
     width: 150,
     editable: true,
   },
   {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 110,
-    editable: true,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
+    field: 'motivo',
+    headerName: 'MOTIVO',
+    description: 'MOTIVO DE LA FECHA DE SALIDA',
     width: 160,
-    valueGetter: (params) =>
-      `${params.getValue(params.id, 'firstName') || ''} ${
-        params.getValue(params.id, 'lastName') || ''
-      }`,
+    editable: true,
   },
 ];
 
 const rows = [
-  { id: 0, lastName: 'lefin', firstName: 'pil', age: 41 },
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+  { id: 0, firstName: 'pil', lastName: 'lefin', age: 41, motivo: 'comida' },
+  { id: 1, firstName: 'Jon', lastName: 'Snow', age: 35, motivo: 'fin' },
+  {
+    id: 2,
+    firstName: 'Cersei',
+    lastName: 'Lannister',
+    age: 42,
+    motivo: 'comida',
+  },
+  { id: 3, firstName: 'Jaime', lastName: 'Lannister', age: 45, motivo: 'fin' },
+  { id: 4, firstName: 'Arya', lastName: 'Stark', age: 16, motivo: 'comida' },
+  {
+    id: 5,
+    firstName: 'Daenerys',
+    lastName: 'Targaryen',
+    age: null,
+    motivo: 'comida',
+  },
+  { id: 6, firstName: null, lastName: 'Melisandre', age: 150, motivo: 'fin' },
+  {
+    id: 7,
+    firstName: 'Ferrara',
+    lastName: 'Clifford',
+    age: 44,
+    motivo: 'comida',
+  },
+  { id: 8, firstName: 'Rossini', lastName: 'Frances', age: 36, motivo: 'fin' },
+  { id: 9, firstName: 'Harvey', lastName: 'Roxie', age: 65, motivo: 'comida' },
 ];
 
 const tableStyle = {
-    height: 400,
-    width: '100%',
-    background: 'white',
+  height: 650,
+  width: '40%',
+  background: 'white',
 };
-
 
 export default function DataTable() {
   return (
@@ -61,7 +67,7 @@ export default function DataTable() {
       <DataGrid
         rows={rows}
         columns={columns}
-        pageSize={5}
+        pageSize={10}
         checkboxSelection
         disableSelectionOnClick
       />

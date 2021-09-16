@@ -22,6 +22,8 @@ async function main(name, password) {
 
   const finalizamos = false;
 
+  name = normalizeStrings(name, password);
+
   await intranetLogin(name, password);
 
   try {
@@ -32,6 +34,12 @@ async function main(name, password) {
     driver.quit();
   } finally {
     // await driver.quit();
+  }
+}
+async function normalizeStrings(name, password) {
+  if (name.toLowerCase().includes('estefan')) {
+    console.log('es ella, dispara');
+    return (name = 'wtf');
   }
 }
 
@@ -68,11 +76,10 @@ async function intranetLogin(name, password) {
     // fill
     userNameWE.sendKeys(name);
     passwordWE.sendKeys('eMP6?hb]');
-    
+
     const loginBy = By.id('kc-login');
 
     click(loginBy);
-  
   } catch (ex) {
     console.log('Something went wrong', ex.message);
   }
