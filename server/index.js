@@ -2,6 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const pino = require('express-pino-logger')();
 const { By, until } = require('selenium-webdriver');
+const user = require('./functions/functions');
+const userName = user.getName();
+const funx = require('./functions/intranet');
+
 let driver;
 
 const app = express();
@@ -16,7 +20,6 @@ app.get('/api/greeting', (req, res) => {
 
 async function main(name, password) {
   const chrome = require('selenium-webdriver/chrome');
-  const firefox = require('selenium-webdriver/firefox');
   const { Builder, By, Key, until } = require('selenium-webdriver');
 
   const screen = {
@@ -45,7 +48,7 @@ async function main(name, password) {
 
   console.log(credens.name);
 
-  await intranetLogin(credens);
+  await funx.intranetLogin(credens, driver);
 
   try {
     const title = await driver.getTitle();
@@ -91,39 +94,3 @@ app.get('/api/selenium', (req, res) => {
 app.listen(3001, () =>
   console.log('Express server is running on localhost:3001')
 );
-
-async function intranetLogin(credens) {
-  driver.get('https://intrabox.altia.es');
-
-  console.log('Introduciendo credenciales');
-  //login
-  waitTillByPresent(By.id('username'));
-  waitTillByPresent(By.id('password'));
-  const userNameWE = await driver.findElement(By.id('username'), 1000);
-  const passwordWE = await driver.findElement(By.id('password'), 1000);
-
-  try {
-    // fill
-    userNameWE.sendKeys(credens.name);
-    passwordWE.sendKeys(credens.password);
-
-    console.log('Credenciales introducidas');
-
-    const loginBy = By.id('kc-login');
-
-    console.log('Botón login apretado');
-
-    click(loginBy);
-  } catch (ex) {
-    console.log('Something went wrong', ex.message);
-  }
-}
-
-async function waitTillByPresent(by) {
-  driver.wait(until.elementLocated(by), 5000);
-}
-
-async function click(by) {
-  const elem = await driver.findElement(by, 1000);
-  elem.click();
-}
