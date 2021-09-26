@@ -54,17 +54,12 @@ async function main(name, password) {
   const administrar = await funx.aprietaLoginBtn(driver);
   const text = await funx.goToHours(driver, administrar);
   
-  await funx.getHours(driver, text);
+  const hours = await funx.getHours(driver, text);
 
-  try {
-    const title = await driver.getTitle();
-    console.log(title);
-  } catch (ex) {
-    console.log('Something went wrong', ex.message);
-    driver.quit();
-  } finally {
-    // await driver.quit();
-  }
+  console.log(hours);
+
+  return hours;
+
 }
 
 async function normalizeStrings(credens) {
@@ -89,7 +84,9 @@ app.get('/api/selenium', (req, res) => {
 
     console.log('has introducido : ' + name + ' ' + password);
 
-    main(name, password).catch(console.error);
+    const hours = main(name, password).catch(console.error);
+    return hours;
+
   } catch (error) {
     console.error(error);
   }

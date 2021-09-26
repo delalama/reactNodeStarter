@@ -1,3 +1,4 @@
+const moment = require('moment');
 const { By, until } = require('selenium-webdriver');
 let driver;
 const funx = require('./functions');
@@ -57,22 +58,64 @@ async function goToHours(driver, elem) {
   await funx.wait(driver, asistenciasBy);
   await funx.click(driver, asistenciasBy);
 
-  return 'Estamos en la página de las horas';
+  var elem = driver.wait(
+    until.elementLocated(
+      By.css('body > div.o_main.o_chatter_position_normal > main > div.o_content > div > div > table > tbody > tr.o_data_row > td:nth-child(3)')
+    ),
+    10000
+  );
+
+  return elem;
 }
 exports.goToHours = goToHours;
 
-async function getHours(driver, text) {
-  console.log(text);
+async function getHours(driver, elem) {
 
   var today = new Date();
   var mm = String(today.getMonth() + 1).padStart(2, '0') ; 
 
-  console.log('mes número: ' + mm);
+  console.log('Mes actual: ' + mm);
 
-  const hoursArray = null;
-  return hoursArray;
+  const leftColumnDataBy  = By.css("body > div.o_main.o_chatter_position_normal > main > div.o_content > div > div > table > tbody > tr.o_data_row > td:nth-child(3)");
+  const rightColumnDataBy = By.css("body > div.o_main.o_chatter_position_normal > main > div.o_content > div > div > table > tbody > tr.o_data_row> td:nth-child(4)");
+  const motivoDataBy      = By.css("body > div.o_main.o_chatter_position_normal > main > div.o_content > div > div > table > tbody > tr.o_data_row > td:nth-child(6)");
+
+
+  let leftColumnDataWE    = await driver.findElements(leftColumnDataBy);
+  const rightColumnDataWE = await driver.findElements(rightColumnDataBy);
+  const motivoDataWE      = await driver.findElements(motivoDataBy);
+
+  // formato moment
+  const formato = 'DD/MM/YYYY HH:mm:s';
+
+  let leftDates = getDatesFromColumn(leftColumnDataWE);
+  let rightDates = getDatesFromColumn(rightColumnDataWE);
+  let reasons = null;
+
+  let allData = [leftDates, rightDates];
+
+
+  return allData;
 }
+
 exports.getHours = getHours;
+
+async function getDatesFromColumn(WEArray) {
+  const data = [];
+
+  for(let we of WEArray) {
+    let texto = await we.getText();
+
+    await moment(texto, formato).isValid();
+
+    let date = moment(texto, formato);
+
+    data.push(date);
+
+    console.log(date);
+  }
+  return data;
+}
 
 const value = 'estefan';
 exports.value = value;

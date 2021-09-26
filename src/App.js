@@ -29,8 +29,9 @@ class App extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    fetch(`/api/selenium?name=${encodeURIComponent(this.state.name)}`)
-      .then((response) => response.json())
+    fetch(`/api/selenium?name=${encodeURIComponent(this.state.name)}&password=${encodeURIComponent(this.state.password)}`)
+      // .then((response) => response.json())
+      .then((response) => console.log(response))
       .then((state) => this.setState(state));
   }
 

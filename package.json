@@ -6,23 +6,20 @@
     "@material-ui/core": "^4.12.3",
     "@material-ui/data-grid": "^4.0.0-alpha.37",
     "chromedriver": "^93.0.1",
+    "moment": "^2.29.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-scripts": "^3.4.0",
     "selenium-webdriver": "^4.0.0-rc-1"
   },
-  
   "scripts": {
-    "simple": "react-scripts start & server:dev",
+    "simple": "react-scripts start",
     "heroku": "npm run server & react-scripts start",
     "start": "npm run server:dev & react-scripts start",
-    "serverStart": "node-env-run server --exec nodemon | pino-colada",
-    "reactStart": "react-scripts start",
     "build": "react-scripts build",
     "server:dev": "NODE_ENV=dev node-env-run server --exec nodemon | pino-colada",
     "server": "NODE_ENV=production node-env-run server --exec nodemon | pino-colada"
   },
-  
   "proxy": "http://localhost:3001",
   "eslintConfig": {
     "extends": "react-app"
