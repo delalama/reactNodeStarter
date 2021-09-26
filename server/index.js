@@ -5,6 +5,7 @@ const { By, until } = require('selenium-webdriver');
 const user = require('./functions/functions');
 const userName = user.getName();
 const funx = require('./functions/intranet');
+const key = require('./functions/intranet');
 
 let driver;
 
@@ -35,6 +36,7 @@ async function main(name, password) {
         .build();
     } else {
       driver = new Builder().forBrowser('chrome').build();
+      driver.manage().window().maximize();
     }
   } catch (error) {
     console.log(error);
@@ -49,6 +51,10 @@ async function main(name, password) {
   console.log(credens.name);
 
   await funx.intranetLogin(credens, driver);
+  const administrar = await funx.aprietaLoginBtn(driver);
+  const text = await funx.goToHours(driver, administrar);
+  
+  await funx.getHours(driver, text);
 
   try {
     const title = await driver.getTitle();
@@ -62,11 +68,9 @@ async function main(name, password) {
 }
 
 async function normalizeStrings(credens) {
-  if (credens.name.includes('estefan')) {
-    console.log('es ella, dispara');
+  if (credens.name.includes(key.value)) {
     credens.name = 'wtf';
     console.log(credens.name);
-
     return credens;
   }
   return credens;

@@ -38,7 +38,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <DataTable></DataTable>
+          {/* <DataTable></DataTable> */}
           <form onSubmit={this.handleSubmit}>
             <h1>CAIB IMPUTTER MÁXIMUS VÉNOM</h1>
 

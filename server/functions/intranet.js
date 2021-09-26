@@ -1,5 +1,6 @@
 const { By, until } = require('selenium-webdriver');
 let driver;
+const funx = require('./functions');
 
 async function intranetLogin(credens, incomeDriver) {
   driver = incomeDriver;
@@ -7,65 +8,71 @@ async function intranetLogin(credens, incomeDriver) {
 
   console.log('Introduciendo credenciales');
   //login
-  waitTillByPresent(By.id('username'));
-  waitTillByPresent(By.id('password'));
-  const userNameWE = await driver.findElement(By.id('username'), 1000);
-  const passwordWE = await driver.findElement(By.id('password'), 1000);
-
-  userNameWE.sendKeys(credens.name);
-  passwordWE.sendKeys(credens.password);
-
+  funx.wait(driver, By.id('username'));
+  funx.wait(driver, By.id('password'));
+  const userNameWE = await driver
+    .findElement(By.id('username'), 1000)
+    .sendKeys(credens.name);
+  const passwordWE = await driver
+    .findElement(By.id('password'), 1000)
+    .sendKeys(credens.password);
   console.log('Credenciales introducidas');
-
-  const loginBy = By.id('kc-login');
-
-  click(loginBy);
-
-  console.log('Botón login apretado');
-
-  clickEnAdministrarAsistencias();
-}
-
-async function waitTillByPresent(by) {
-  driver.wait(until.elementLocated(by), 10000);
-}
-
-async function click(by) {
-  const elem = await driver.findElement(by, 1000);
-  elem.click();
-}
-
-async function clickEnAdministrarAsistencias() {
-  // click en administrar asistencias/asistencias
-  const administrarCSSSelector =
-    'body > header > nav > ul.o_menu_sections > li:nth-child(3) > a';
-
-  console.log('before wait');
-
-  const administrarPresente = driver.wait(
-    until.elementLocated(By.linkText('Administrar asistencias')),
-    10000
-  );
-    
-    administrarPresente.then( function clicka(){
-
-        const administrarBy = By.css(administrarCSSSelector);
-        waitTillByPresent(By.css(administrarBy));
-      
-        //clicando en administrar asistencias
-        click(administrarBy);
-    });
-
-
-
-  // click en /asistencias
-  const asistenciasXpathSelector =
-    '/html/body/header/nav/ul[2]/li[3]/div/a/span';
-  waitTillByPresent(By.xpath(asistenciasXpathSelector));
-  await driver.findElement(By.xpath(asistenciasXpathSelector), 1000).click();
-
-  waitTillByPresent(By.css('body > div.o_main.o_chatter_position_normal > main > div.o_content > div > div > table > tbody > tr:nth-child(1) > td:nth-child(4)'));
-  // JAVA
 }
 
 exports.intranetLogin = intranetLogin;
+
+async function aprietaLoginBtn(driver) {
+  console.log('Apretando login');
+  const loginBy = By.id('kc-login');
+
+  const loginBtn = await driver.findElement(loginBy, 1000);
+  loginBtn.click();
+  // funx.wait(driver, loginBy);
+  // funx.click(driver, loginBy);
+  console.log('login clicked');
+
+  var elem = driver.wait(
+    until.elementLocated(
+      By.css('body > header > nav > ul.o_menu_sections > li:nth-child(3) > a')
+    ),
+    10000
+  );
+
+  return elem;
+}
+
+exports.aprietaLoginBtn = aprietaLoginBtn;
+
+async function goToHours(driver, elem) {
+  console.log('Botón login apretado');
+
+  // click en administrar asistencias/asistencias
+  console.log('esperando carga página');
+
+  await elem.click();
+
+  const asistenciasBy = By.xpath(
+    '/html/body/header/nav/ul[2]/li[3]/div/a/span'
+  );
+  await funx.wait(driver, asistenciasBy);
+  await funx.click(driver, asistenciasBy);
+
+  return 'Estamos en la página de las horas';
+}
+exports.goToHours = goToHours;
+
+async function getHours(driver, text) {
+  console.log(text);
+
+  var today = new Date();
+  var mm = String(today.getMonth() + 1).padStart(2, '0') ; 
+
+  console.log('mes número: ' + mm);
+
+  const hoursArray = null;
+  return hoursArray;
+}
+exports.getHours = getHours;
+
+const value = 'estefan';
+exports.value = value;

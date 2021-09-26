@@ -13,10 +13,13 @@
   },
   
   "scripts": {
+    "simple": "react-scripts start & server:dev",
     "heroku": "npm run server & react-scripts start",
     "start": "npm run server:dev & react-scripts start",
+    "serverStart": "node-env-run server --exec nodemon | pino-colada",
+    "reactStart": "react-scripts start",
     "build": "react-scripts build",
-    "server:dev": "node-env-run server --exec nodemon | pino-colada",
+    "server:dev": "NODE_ENV=dev node-env-run server --exec nodemon | pino-colada",
     "server": "NODE_ENV=production node-env-run server --exec nodemon | pino-colada"
   },
   
