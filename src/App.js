@@ -9,6 +9,7 @@ class App extends Component {
     this.state = {
       name: '',
       password: '',
+      rows: [],
       mensaje: '',
     };
     this.handleChange = this.handleChange.bind(this);
@@ -31,15 +32,23 @@ class App extends Component {
     event.preventDefault();
     fetch(`/api/selenium?name=${encodeURIComponent(this.state.name)}&password=${encodeURIComponent(this.state.password)}`)
       // .then((response) => response.json())
+      .then((response) => response.json())
       .then((response) => console.log(response))
-      .then((state) => this.setState(state));
+      .then((response) => this.setState(
+        {
+          rows: response,
+        }
+      ))
+      ;
   }
 
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          {/* <DataTable></DataTable> */}
+          <DataTable
+            rows = {this.state.rows}
+          ></DataTable>
           <form onSubmit={this.handleSubmit}>
             <h1>CAIB IMPUTTER MÁXIMUS VÉNOM</h1>
 

@@ -56,6 +56,7 @@ async function main(name, password) {
   
   const hours = await funx.getHours(driver, text);
 
+  console.log('pasa por aquí ?' + hours);
   console.log(hours);
 
   return hours;
@@ -72,6 +73,7 @@ async function normalizeStrings(credens) {
 }
 
 app.get('/api/selenium', (req, res) => {
+
   try {
     if (process.env.NODE_ENV === 'production') {
       console.log('ENVIRONMENT -> estamos en production');
@@ -82,10 +84,17 @@ app.get('/api/selenium', (req, res) => {
     const name = req.query.name || 'jesus.delalama@altia.es';
     const password = req.query.password || 'eMP6?hb]';
 
+
+    console.log('nombre: ' + name);
+    console.log('pass: ' + password);
+
     console.log('has introducido : ' + name + ' ' + password);
 
     const hours = main(name, password).catch(console.error);
-    return hours;
+
+    hours.then((elem) =>
+      res.send(elem)
+    );
 
   } catch (error) {
     console.error(error);

@@ -61,7 +61,7 @@ const tableStyle = {
   background: 'white',
 };
 
-export default function DataTable() {
+export default function DataTable( {rows} ) {
   return (
     <div style={tableStyle}>
       <DataGrid
