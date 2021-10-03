@@ -91,21 +91,32 @@ async function getHours(driver, elem) {
   const rightColumnDataWE = await driver.findElements(rightColumnDataBy);
   const motivoDataWE = await driver.findElements(motivoDataBy);
 
-  let leftDates = await getDatesFromColumn(leftColumnDataWE);
-  let rightDates = await getDatesFromColumn(rightColumnDataWE);
-  let reasons = null;
+  let dayDates = await getDataFromColumn(leftColumnDataWE, 'dia');
+  let leftDates = await getDataFromColumn(leftColumnDataWE, 'hora');
+  let rightDates = await getDataFromColumn(rightColumnDataWE, 'hora');
+  let reasons = await getReason(motivoDataWE);
 
-  let allData = [leftDates, rightDates];
+  let allData = [];
+
+  leftDates.forEach((elem, index) => {
+    allData.push({
+      id: index,
+      dia: dayDates[index],
+      horaEntrada: elem,
+      horaSalida: rightDates[index],
+      motivo: reasons[index],
+    });
+  });
 
   return allData;
 }
 
 exports.getHours = getHours;
 
-async function getDatesFromColumn(WEArray) {
+async function getDataFromColumn(WEArray, data) {
   // formato moment
   const formato = 'DD/MM/YYYY HH:mm:s';
-  const data = [];
+  const dataArr = [];
 
   for (let we of WEArray) {
     let texto = await we.getText();
@@ -114,10 +125,26 @@ async function getDatesFromColumn(WEArray) {
 
     let date = moment(texto, formato);
 
-    data.push(date);
+    if (data === 'dia') {
+      date = date.format('DD/MM/YYYY');
+    } else if( data === 'hora') {
+      date = date.format('HH:mm');      
+    }
 
-    console.log(date);
+    dataArr.push(date);
   }
+  return dataArr;
+}
+
+async function getReason(WEArray) {
+  const data = [];
+
+  for (let we of WEArray) {
+    let texto = await we.getText();
+
+    data.push(texto.substring(18));
+  }
+
   return data;
 }
 

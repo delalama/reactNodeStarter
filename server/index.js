@@ -53,14 +53,15 @@ async function main(name, password) {
   await funx.intranetLogin(credens, driver);
   const administrar = await funx.aprietaLoginBtn(driver);
   const text = await funx.goToHours(driver, administrar);
-  
+
   const hours = await funx.getHours(driver, text);
 
   console.log('pasa por aquí ?' + hours);
   console.log(hours);
 
-  return hours;
+  driver.quit();
 
+  return hours;
 }
 
 async function normalizeStrings(credens) {
@@ -73,7 +74,6 @@ async function normalizeStrings(credens) {
 }
 
 app.get('/api/selenium', (req, res) => {
-
   try {
     if (process.env.NODE_ENV === 'production') {
       console.log('ENVIRONMENT -> estamos en production');
@@ -84,7 +84,6 @@ app.get('/api/selenium', (req, res) => {
     const name = req.query.name || 'jesus.delalama@altia.es';
     const password = req.query.password || 'eMP6?hb]';
 
-
     console.log('nombre: ' + name);
     console.log('pass: ' + password);
 
@@ -92,10 +91,12 @@ app.get('/api/selenium', (req, res) => {
 
     const hours = main(name, password).catch(console.error);
 
-    hours.then((elem) =>
-      res.send(elem)
-    );
-
+    hours.then((elem) => {
+      if (elem === null) {
+        error('HA HABIDO UN ERROR');
+      }
+      res.send(elem);
+    });
   } catch (error) {
     console.error(error);
   }
