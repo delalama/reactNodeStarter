@@ -1,7 +1,9 @@
+const { HourglassEmpty } = require('@material-ui/icons');
 const moment = require('moment');
-const { By, until } = require('selenium-webdriver');
-let driver;
+const { By, until, Key } = require('selenium-webdriver');
 const funx = require('./functions');
+
+let driver;
 
 async function intranetLogin(credens, incomeDriver) {
   driver = incomeDriver;
@@ -127,8 +129,8 @@ async function getDataFromColumn(WEArray, data) {
 
     if (data === 'dia') {
       date = date.format('DD/MM/YYYY');
-    } else if( data === 'hora') {
-      date = date.format('HH:mm');      
+    } else if (data === 'hora') {
+      date = date.format('HH:mm');
     }
 
     dataArr.push(date);
@@ -150,3 +152,5 @@ async function getReason(WEArray) {
 
 const value = 'estefan';
 exports.value = value;
+
+

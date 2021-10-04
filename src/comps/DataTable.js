@@ -10,8 +10,10 @@ export default function DataTable(props) {
   const imputeRowsToSend = () => {
     console.log(rowsToSend);
     props.imputationRows(rowsToSend);
-  }
-
+  };
+  const btnStyle = {
+    position: 'absolute',
+  };
   return (
     <div
       style={{
@@ -46,8 +48,8 @@ export default function DataTable(props) {
                 if (row.id === id) {
                   selectedRowsArray.push(row);
                 }
-              })  
-            })
+              });
+            });
 
             setRowsToSend(selectedRowsArray);
 
@@ -58,7 +60,13 @@ export default function DataTable(props) {
         }}
       />
       {selectedRows && (
-        <Button type="submit" variant="contained" className="header" onClick={imputeRowsToSend}>
+        <Button
+          type="submit"
+          variant="contained"
+          className="header"
+          onClick={imputeRowsToSend}
+          style={btnStyle}
+        >
           TO ÍMPUT
         </Button>
       )}
