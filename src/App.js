@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import DataTable from './comps/DataTable';
 import Button from '@material-ui/core/Button';
-import ImageAvatars from './comps/avatar';
-import Grid from '@material-ui/core/Grid';
 import waitGif from './static/images/giphy.gif';
+import CuadroDeImputacion from './comps/cuadroDeImputacion';
 
 class App extends Component {
   constructor(props) {
@@ -16,6 +15,9 @@ class App extends Component {
       mensaje: '',
       submitDone: false,
       hayData: false,
+      imputacionSeleccionada: false,
+      imputationRows: [],
+      imputando: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -59,6 +61,7 @@ class App extends Component {
     };
     const entreSubmitYLlegaData = this.state.submitDone && !this.state.hayData;
     const cuandoLlegaData = this.state.submitDone && this.state.hayData;
+    const imputando = this.state.imputando;
 
     const gifStyle = {
       width: '400px',
@@ -71,6 +74,15 @@ class App extends Component {
       flexDirection: 'column',
       height: '100%',
       width: '100%',
+    };
+
+    const imputationRows = (rws) => {
+      this.setState({
+        imputationRows: rws,
+        imputando: true,
+      });
+
+      console.log('vamos a imputar', rws);
     };
 
     return (
@@ -118,15 +130,27 @@ class App extends Component {
           )}
 
           <div>
-            {cuandoLlegaData && <DataTable rows={this.state.rows}></DataTable>}
+            {cuandoLlegaData && !imputando && (
+              <DataTable
+                rows={this.state.rows}
+                imputationRows={imputationRows}
+              ></DataTable>
+            )}
             {/* <DataTable rows={this.state.rows}></DataTable> */}
           </div>
 
-          <p>{this.state.mensaje}</p>
-          <h3 style={hStyle} className="noselect">
-            By Jesús de la Lama Amengual
-          </h3>
         </div>
+
+        {imputando && (
+            <CuadroDeImputacion
+              imputationRows={this.state.imputationRows}
+            ></CuadroDeImputacion>
+          )}
+          
+        <p>{this.state.mensaje}</p>
+        <h3 style={hStyle} className="noselect">
+          By Jesús de la Lama Amengual
+        </h3>
       </div>
     );
   }

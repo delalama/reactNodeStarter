@@ -3,18 +3,19 @@ import { useState } from 'react';
 import { convertGridRowsPropToState, DataGrid } from '@material-ui/data-grid';
 import Button from '@material-ui/core/Button';
 
-export default function DataTable({ rows }) {
+export default function DataTable(props) {
   const [selectedRows, setSelectedRows] = useState(false);
   const [rowsToSend, setRowsToSend] = useState([]);
 
   const imputeRowsToSend = () => {
     console.log(rowsToSend);
+    props.imputationRows(rowsToSend);
   }
 
   return (
     <div
       style={{
-        height: '50vh',
+        height: '100vh',
         width: '51%',
         textShadow: 'none',
         background: 'white',
@@ -23,7 +24,7 @@ export default function DataTable({ rows }) {
       }}
     >
       <DataGrid
-        rows={rows}
+        rows={props.rows}
         columns={columns}
         checkboxSelection
         disableSelectionOnClick
@@ -41,7 +42,7 @@ export default function DataTable({ rows }) {
 
             const selectedRowsArray = [];
             ids.forEach((id) => {
-              rows.forEach((row) => {
+              props.rows.forEach((row) => {
                 if (row.id === id) {
                   selectedRowsArray.push(row);
                 }
@@ -50,7 +51,7 @@ export default function DataTable({ rows }) {
 
             setRowsToSend(selectedRowsArray);
 
-            const selectedRowData = rows.filter((row) =>
+            const selectedRowData = props.rows.filter((row) =>
               selectedIDs.has(row.id)
             );
           }
