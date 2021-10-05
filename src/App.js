@@ -34,7 +34,6 @@ class App extends Component {
   }
 
   impute = () => {
-
     console.log('caibImputación desde app.js');
 
     const functionName = 'CAIBimput';
@@ -83,13 +82,11 @@ class App extends Component {
       this.setState({
         password: event.target.value,
       });
-    }
-    else if(event.target.id ==='caibUser') {
+    } else if (event.target.id === 'caibUser') {
       this.setState({
         caibUser: event.target.value,
       });
-    }
-    else {
+    } else {
       this.setState({
         name: event.target.value,
       });
@@ -174,7 +171,7 @@ class App extends Component {
                 onChange={this.handleChange}
               />
               <h1></h1>
-              
+
               <label htmlFor="password" className="noselect">
                 pass{' '}
               </label>

@@ -8,9 +8,10 @@
     "@material-ui/icons": "^4.11.2",
     "chromedriver": "^93.0.1",
     "moment": "^2.29.1",
+    "pino": "^6.13.3",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
-    "react-scripts": "^3.4.0",
+    "react-scripts": "^4.0.3",
     "react-tic-tac-toe": "^1.0.3",
     "selenium-webdriver": "^4.0.0-rc-1"
   },
@@ -19,7 +20,7 @@
     "heroku": "npm run server & react-scripts start",
     "start": "npm run server:dev & react-scripts start",
     "build": "react-scripts build",
-    "server:dev": "NODE_ENV=dev node-env-run server --exec nodemon | pino-colada",
+    "server:dev": "NODE_ENV=dev node-env-run server --exec nodemon ",
     "server": "NODE_ENV=production node-env-run server --exec nodemon | pino-colada"
   },
   "proxy": "http://localhost:3001",
@@ -36,11 +37,11 @@
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "express-pino-logger": "^4.0.0",
-    "node-env-run": "^3.0.2",
-    "nodemon": "^1.19.4",
+    "http": "0.0.0",
+    "node-env-run": "^4.0.2",
+    "nodemon": "^2.0.13",
     "npm-run-all": "^4.1.5",
     "pino-colada": "^1.5.1",
-    "http": "0.0.0",
     "socket.io": "^2.2.0",
     "websocket": "^1.0.28"
   }

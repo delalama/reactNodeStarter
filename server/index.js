@@ -229,16 +229,17 @@ async function caibImpute(props) {
 
   const driver = props.driver;
   const caibUser = props.caibUser;
+  const imputeData = props.imputeData;
 
   const answers = [];
 
-  const propis = {
-    driver,
-    caibUser,
-    imputeData: props.imputeData[0],
-  };
+  for (var i = 0; i < imputeData.length; i++) {
+    const propis = {
+      driver,
+      caibUser,
+      imputeData: imputeData[i],
+    };
 
-  for (var i = 0; i < 1; i++) {
     const answer = await eachImputation(propis);
     console.log(answer);
     answers.push(answer);
@@ -256,13 +257,18 @@ async function caibImpute(props) {
 
 async function eachImputation({ driver, caibUser, imputeData }) {
   console.log(caibUser);
+  console.log(imputeData);
+
+  const horaEntrada = imputeData.horaEntrada;
+  const horaSalida = imputeData.horaSalida;
+  const dateDay = imputeData.dia;
+  console.log(dateDay);
+
+  const reason = imputeData.motivo;
+
+  console.log(caibUser);
 
   const answer = 'hola';
-
-  const hourEnter = imputeData.horaEntrada;
-  const hourExit = imputeData.horaSalida;
-  const dateDay = imputeData.dia;
-  const reason = imputeData.motivo;
 
   // navegar al CAIB
   const caibUrl =
@@ -277,17 +283,16 @@ async function eachImputation({ driver, caibUser, imputeData }) {
 
   // clickando calendario
   console.log('clickando calendario');
-  const calendar = await funx.waitWhatever(
-    driver,
-    '/html/body/div/div[2]/form/div[2]/div/div[2]/div[2]/div/div/div[2]/div/div/div[2]/div[1]/div/div[1]/input'
-  );
+  const calendarXpath =
+    '/html/body/div/div[2]/form/div[2]/div/div[2]/div[2]/div/div/div[2]/div/div/div[2]/div[1]/div/div[1]/input';
+
+  const calendar = await funx.waitWhatever(driver, calendarXpath);
 
   funx.wait(driver, calendarXpathBy);
 
-  await calendar.sendKeys(Key.LEFT);
-  await calendar.sendKeys(Key.LEFT);
-  await calendar.sendKeys(dateDay);
-
+  await driver.findElement(calendarXpathBy).sendKeys(Key.LEFT);
+  await driver.findElement(calendarXpathBy).sendKeys(Key.LEFT);
+  await driver.findElement(calendarXpathBy).sendKeys(dateDay);
 
   // click en altia consultores
   const ALTIA_CONSULTORES_OPTION_URL =
@@ -297,10 +302,258 @@ async function eachImputation({ driver, caibUser, imputeData }) {
   funx.click(driver, altiaConsultoresRadioButtonSE);
 
   // click en siguiente
-  const siguienteSE = By.css('#mG61Hd > div.freebirdFormviewerViewFormCard.exportFormCard > div > div.freebirdFormviewerViewNavigationNavControls > div.freebirdFormviewerViewNavigationButtonsAndProgress > div.freebirdFormviewerViewNavigationLeftButtons > div > span');
-  funx.wait(driver, siguienteSE);
-  funx.click(driver, siguienteSE);
+  const siguienteSE = By.css(
+    '#mG61Hd > div.freebirdFormviewerViewFormCard.exportFormCard > div > div.freebirdFormviewerViewNavigationNavControls > div.freebirdFormviewerViewNavigationButtonsAndProgress > div.freebirdFormviewerViewNavigationLeftButtons > div > span'
+  );
+  await funx.wait(driver, siguienteSE);
+  await funx.click(driver, siguienteSE);
 
-  // sendMessage(JSON.stringify({ data: 'hola fondo sur!!' }));
-  return texto;
+  await sleep(100);
+
+  driver.wait(function () {
+    return driver
+      .executeScript('return document.readyState')
+      .then(function (readyState) {
+        return readyState === 'complete';
+      });
+  });
+
+  console.log('página cargada');
+
+  const selectorBy = By.css('.quantumWizMenuPaperselectEl');
+  let el = await driver.findElement(selectorBy);
+  await driver.wait(until.elementIsVisible(el), 10000);
+
+  await el.click();
+
+  const name = caibUser;
+
+  driver
+    .executeScript(
+      "var a = document.querySelectorAll('div .exportOption > span ');var nombre = arguments[0];function isDif(elem){return elem!=nombre};a.forEach((element, ind) => { var elem = element.innerText; if (isDif(elem)) { a[ind].parentNode.removeChild(a[ind]) } });console.log(arguments[0]);",
+      caibUser
+    )
+    .then(function (returnValue) {
+      console.log('Return Value ->' + returnValue);
+    });
+
+  await el.click();
+
+  await sleep(100);
+
+  // const elem = By.css(
+  //   '#mG61Hd > div.freebirdFormviewerViewFormCard.exportFormCard > div > div.freebirdFormviewerViewItemList > div:nth-child(2) > div > div > div.freebirdFormviewerComponentsQuestionSelectRoot > div > div:nth-child(1) > div.quantumWizMenuPaperselectOptionList > div.quantumWizMenuPaperselectOption.appsMaterialWizMenuPaperselectOption.freebirdThemedSelectOptionDarkerDisabled.exportOption.isSelected.isPlaceholder'
+  // );
+  // await funx.wait(driver, elem);
+  // await funx.click(driver, elem);
+
+  await driver.executeScript(
+    "var a = document.querySelectorAll('div .exportOption > span');" +
+      'console.log(a);' +
+      'a[1].click()'
+  );
+
+  console.log('nombre clickado');
+
+  await sleep(100);
+
+  // entrada de horas
+  console.log('entrada de horas');
+  const entradaHourBy = By.css(
+    '#mG61Hd > div.freebirdFormviewerViewFormCard.exportFormCard > div > div.freebirdFormviewerViewItemList > div:nth-child(3) > div > div > div.freebirdFormviewerComponentsQuestionTimeRoot > div > div:nth-child(1) > div.quantumWizTextinputPaperinputEl.freebirdFormviewerComponentsQuestionTimeTimeInput.freebirdThemedInput.freebirdThemedInputDarkerDisabled.freebirdFormviewerComponentsQuestionTimeInput.modeLight > div.quantumWizTextinputPaperinputMainContent.exportContent > div > div.quantumWizTextinputPaperinputInputArea > input'
+  );
+  const entradaMinsBy = By.css(
+    '#mG61Hd > div.freebirdFormviewerViewFormCard.exportFormCard > div > div.freebirdFormviewerViewItemList > div:nth-child(3) > div > div > div.freebirdFormviewerComponentsQuestionTimeRoot > div > div:nth-child(3) > div > div.quantumWizTextinputPaperinputMainContent.exportContent > div > div.quantumWizTextinputPaperinputInputArea > input'
+  );
+  const salidaHourBy = By.css(
+    '#mG61Hd > div.freebirdFormviewerViewFormCard.exportFormCard > div > div.freebirdFormviewerViewItemList > div:nth-child(4) > div > div > div.freebirdFormviewerComponentsQuestionTimeRoot > div > div:nth-child(1) > div.quantumWizTextinputPaperinputEl.freebirdFormviewerComponentsQuestionTimeTimeInput.freebirdThemedInput.freebirdThemedInputDarkerDisabled.freebirdFormviewerComponentsQuestionTimeInput.modeLight > div.quantumWizTextinputPaperinputMainContent.exportContent > div > div.quantumWizTextinputPaperinputInputArea > input'
+  );
+  const salidaMinsBy = By.css(
+    '#mG61Hd > div.freebirdFormviewerViewFormCard.exportFormCard > div > div.freebirdFormviewerViewItemList > div:nth-child(4) > div > div > div.freebirdFormviewerComponentsQuestionTimeRoot > div > div:nth-child(3) > div > div.quantumWizTextinputPaperinputMainContent.exportContent > div > div.quantumWizTextinputPaperinputInputArea > input'
+  );
+
+  driver.findElement(entradaHourBy).sendKeys(horaEntrada.substring(0, 2));
+  driver.findElement(entradaMinsBy).sendKeys(horaEntrada.substring(3));
+  driver.findElement(salidaHourBy).sendKeys(horaSalida.substring(0, 2));
+  driver.findElement(salidaMinsBy).sendKeys(horaSalida.substring(3));
+
+  await driver
+    .findElement(
+      By.css(
+        '#mG61Hd > div.freebirdFormviewerViewFormCard.exportFormCard > div > div.freebirdFormviewerViewItemList > div:nth-child(5) > div > div > div.freebirdFormviewerComponentsQuestionTextRoot > div > div.quantumWizTextinputPapertextareaMainContent.exportContent > div.quantumWizTextinputPapertextareaContentArea.exportContentArea > textarea'
+      )
+    )
+    .sendKeys(reason);
+
+  await driver
+    .findElement(
+      By.xpath(
+        '//*[@id="mG61Hd"]/div[2]/div/div[3]/div[1]/div[1]/div[2]/span/span'
+      )
+    )
+    .click();
+
+  return 'hola';
+}
+
+app.get('/api/navegacion', (req, res) => {
+  const chrome = require('selenium-webdriver/chrome');
+  const { Builder, By, Key, until } = require('selenium-webdriver');
+
+  const screen = {
+    width: 1800,
+    height: 1000,
+  };
+
+  try {
+    if (process.env.NODE_ENV === 'production') {
+      driver = new Builder()
+        .forBrowser('chrome')
+        .setChromeOptions(new chrome.Options().headless().windowSize(screen))
+        .build();
+    } else {
+      driver = new Builder().forBrowser('chrome').build();
+      driver.manage().window().maximize();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  smallNav();
+
+  const elem = 'holaElem';
+  res.send(elem);
+});
+
+async function smallNav() {
+  const caibUser = 'Jesús de la Lama Amengual';
+  console.log(caibUser);
+
+  const answer = 'hola';
+
+  // navegar al CAIB
+  const caibUrl =
+    'https://docs.google.com/forms/d/e/1FAIpQLSfhn69UDNPybun0AVt-2hZoG3ScK0q2UpCjiNnvSgrRIfCg0A/viewform';
+  driver.get(caibUrl);
+
+  console.log('imputando fecha');
+
+  const calendarXpathBy = By.xpath(
+    '/html/body/div/div[2]/form/div[2]/div/div[2]/div[2]/div/div/div[2]/div/div/div[2]/div[1]/div/div[1]/input'
+  );
+
+  // clickando calendario
+  console.log('clickando calendario');
+  const calendarXpath =
+    '/html/body/div/div[2]/form/div[2]/div/div[2]/div[2]/div/div/div[2]/div/div/div[2]/div[1]/div/div[1]/input';
+
+  const calendar = await funx.waitWhatever(driver, calendarXpath);
+
+  funx.wait(driver, calendarXpathBy);
+
+  await driver.findElement(calendarXpathBy).sendKeys(Key.LEFT);
+  await driver.findElement(calendarXpathBy).sendKeys(Key.LEFT);
+  await driver.findElement(calendarXpathBy).sendKeys(dateDay);
+
+  // click en altia consultores
+  const ALTIA_CONSULTORES_OPTION_URL =
+    '//*[@id="mG61Hd"]/div[2]/div/div[2]/div[3]/div/div/div[2]/div/div/span/div/div[2]';
+  const altiaConsultoresRadioButtonSE = By.xpath(ALTIA_CONSULTORES_OPTION_URL);
+  funx.wait(driver, altiaConsultoresRadioButtonSE);
+  funx.click(driver, altiaConsultoresRadioButtonSE);
+
+  // click en siguiente
+  const siguienteSE = By.css(
+    '#mG61Hd > div.freebirdFormviewerViewFormCard.exportFormCard > div > div.freebirdFormviewerViewNavigationNavControls > div.freebirdFormviewerViewNavigationButtonsAndProgress > div.freebirdFormviewerViewNavigationLeftButtons > div > span'
+  );
+  await funx.wait(driver, siguienteSE);
+  await funx.click(driver, siguienteSE);
+
+  await sleep(100);
+
+  driver.wait(function () {
+    return driver
+      .executeScript('return document.readyState')
+      .then(function (readyState) {
+        return readyState === 'complete';
+      });
+  });
+
+  console.log('página cargada');
+
+  const selectorBy = By.css('.quantumWizMenuPaperselectEl');
+  let el = await driver.findElement(selectorBy);
+  await driver.wait(until.elementIsVisible(el), 10000);
+
+  await el.click();
+
+  const name = caibUser;
+
+  driver
+    .executeScript(
+      "var a = document.querySelectorAll('div .exportOption > span ');var nombre = arguments[0];function isDif(elem){return elem!=nombre};a.forEach((element, ind) => { var elem = element.innerText; if (isDif(elem)) { a[ind].parentNode.removeChild(a[ind]) } });console.log(arguments[0]);",
+      caibUser
+    )
+    .then(function (returnValue) {
+      console.log('Return Value ->' + returnValue);
+    });
+
+  await el.click();
+
+  await sleep(100);
+
+  // const elem = By.css(
+  //   '#mG61Hd > div.freebirdFormviewerViewFormCard.exportFormCard > div > div.freebirdFormviewerViewItemList > div:nth-child(2) > div > div > div.freebirdFormviewerComponentsQuestionSelectRoot > div > div:nth-child(1) > div.quantumWizMenuPaperselectOptionList > div.quantumWizMenuPaperselectOption.appsMaterialWizMenuPaperselectOption.freebirdThemedSelectOptionDarkerDisabled.exportOption.isSelected.isPlaceholder'
+  // );
+  // await funx.wait(driver, elem);
+  // await funx.click(driver, elem);
+
+  await driver.executeScript(
+    "var a = document.querySelectorAll('div .exportOption > span');" +
+      'console.log(a);' +
+      'a[1].click()'
+  );
+
+  console.log('nombre clickado');
+
+  await sleep(100);
+
+  // entrada de horas
+  console.log('entrada de horas');
+  const entradaHourBy = By.css(
+    '#mG61Hd > div.freebirdFormviewerViewFormCard.exportFormCard > div > div.freebirdFormviewerViewItemList > div:nth-child(3) > div > div > div.freebirdFormviewerComponentsQuestionTimeRoot > div > div:nth-child(1) > div.quantumWizTextinputPaperinputEl.freebirdFormviewerComponentsQuestionTimeTimeInput.freebirdThemedInput.freebirdThemedInputDarkerDisabled.freebirdFormviewerComponentsQuestionTimeInput.modeLight > div.quantumWizTextinputPaperinputMainContent.exportContent > div > div.quantumWizTextinputPaperinputInputArea > input'
+  );
+  const entradaMinsBy = By.css(
+    '#mG61Hd > div.freebirdFormviewerViewFormCard.exportFormCard > div > div.freebirdFormviewerViewItemList > div:nth-child(3) > div > div > div.freebirdFormviewerComponentsQuestionTimeRoot > div > div:nth-child(3) > div > div.quantumWizTextinputPaperinputMainContent.exportContent > div > div.quantumWizTextinputPaperinputInputArea > input'
+  );
+  const salidaHourBy = By.css(
+    '#mG61Hd > div.freebirdFormviewerViewFormCard.exportFormCard > div > div.freebirdFormviewerViewItemList > div:nth-child(4) > div > div > div.freebirdFormviewerComponentsQuestionTimeRoot > div > div:nth-child(1) > div.quantumWizTextinputPaperinputEl.freebirdFormviewerComponentsQuestionTimeTimeInput.freebirdThemedInput.freebirdThemedInputDarkerDisabled.freebirdFormviewerComponentsQuestionTimeInput.modeLight > div.quantumWizTextinputPaperinputMainContent.exportContent > div > div.quantumWizTextinputPaperinputInputArea > input'
+  );
+  const salidaMinsBy = By.css(
+    '#mG61Hd > div.freebirdFormviewerViewFormCard.exportFormCard > div > div.freebirdFormviewerViewItemList > div:nth-child(4) > div > div > div.freebirdFormviewerComponentsQuestionTimeRoot > div > div:nth-child(3) > div > div.quantumWizTextinputPaperinputMainContent.exportContent > div > div.quantumWizTextinputPaperinputInputArea > input'
+  );
+
+  driver.findElement(entradaHourBy).sendKeys(horaEntrada.substring(0, 2));
+  driver.findElement(entradaMinsBy).sendKeys(horaEntrada.substring(3));
+  driver.findElement(salidaHourBy).sendKeys(horaEntrada.substring(0, 2));
+  driver.findElement(salidaMinsBy).sendKeys(horaEntrada.substring(3));
+
+  const successText = "Gràcies. S'ha registrat la teva resposta";
+
+  const titleBy = By.xpath('/html/body/div[1]/div[2]/div[1]/div/div[3]');
+  const success = driver.findElement(titleBy).getText() === successText;
+
+  if (success) {
+    // devolvemos true y tachamos el elemento X
+  } else {
+    // devolvemos false y notificamos el error
+  }
+
+  console.log('entrada día ', dia, ' correcta');
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }

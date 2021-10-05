@@ -8,12 +8,15 @@ function getName() {
 exports.getName = getName;
 
 async function waitTillByPresent(driver, by) {
-  driver.wait(until.elementLocated(by), 10000);
+  console.log('¿pasamos?');
+  await driver.wait(until.elementLocated(by), 10000);
+  console.log('¿pasamosB?');
 }
 
 async function click(driver, by) {
   const elem = await driver.findElement(by, 10000);
   elem.click();
+  console.log('clicked');
 }
 
 async function waitAndReturnWE(driver, by) {
@@ -24,14 +27,11 @@ async function waitAndReturnWE(driver, by) {
 }
 
 async function waitWhatever(driver, text) {
-
   const by = By.xpath(text);
 
   driver.wait(until.elementLocated(by), 10000);
 
-  const we = await driver.findElement(by, 10000);
-
-  return we;
+  return  await driver.findElement(by, 10000);
 }
 
 
