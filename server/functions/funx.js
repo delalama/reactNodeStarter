@@ -1,28 +1,28 @@
-const { HourglassEmpty } = require('@material-ui/icons');
 const moment = require('moment');
-const { By, until, Key } = require('selenium-webdriver');
+const { By, Key, until} = require('selenium-webdriver');
 const funx = require('./functions');
 
 let driver;
 
-async function intranetLogin(credens, incomeDriver) {
-  driver = incomeDriver;
-  driver.get('https://intrabox.altia.es');
+async function googleit(props) {
+  const driver = props.driver;
 
-  console.log('Introduciendo credenciales');
-  //login
-  funx.wait(driver, By.id('username'));
-  funx.wait(driver, By.id('password'));
-  const userNameWE = await driver
-    .findElement(By.id('username'), 1000)
-    .sendKeys(credens.name);
-  const passwordWE = await driver
-    .findElement(By.id('password'), 1000)
-    .sendKeys(credens.password);
-  console.log('Credenciales introducidas');
+  console.log(driver);
+  await driver.get('https://www.google.com');
+
+  // accept
+  await driver.findElement(By.xpath('//*[@id="L2AGLb"]/div')).click();
+  console.log('Entering query');
+
+  const searchBy = By.css('body > div.L3eUgb > div.o3j99.ikrT4e.om7nvf > form > div:nth-child(1) > div.A8SBwf > div.RNNXgb > div > div.a4bIc > input');
+  
+  await driver.findElement(searchBy).sendKeys(props.query);
+  await driver.findElement(searchBy).sendKeys(Key.ENTER);
+  
+  return true;
 }
 
-exports.intranetLogin = intranetLogin;
+exports.googleit = googleit;
 
 async function aprietaLoginBtn(driver) {
   console.log('Apretando login');

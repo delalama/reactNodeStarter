@@ -1,21 +1,20 @@
 import React, { Component } from 'react';
 import './App.css';
-import DataTable from './comps/DataTable';
+import logoDll from './logo.png';
 import Button from '@material-ui/core/Button';
 import waitGif from './static/images/giphy.gif';
-import CuadroDeImputacion from './comps/cuadroDeImputacion';
+import okGif from './static/images/ok.gif';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 
 const client = new W3CWebSocket('ws://127.0.0.1:8000');
 const contentDefaultMessage = 'Start writing your document here';
 const username = 'CAIBimput';
-
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       name: '',
-      password: '',
+      responseSelenium: false,
       rows: [],
       mensaje: '',
       submitDone: false,
@@ -28,6 +27,7 @@ class App extends Component {
       username: null,
       text: '',
       caibUser: '',
+      userMessage: '',
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -36,11 +36,13 @@ class App extends Component {
   impute = () => {
     console.log('caibImputación desde app.js');
 
-    const functionName = 'CAIBimput';
+    const functionName = 'functionName';
+    const caibUser = this.state.name;
+    const imputeData = 'imputeData';
+
     const data = {
       functionName,
-      caibUser: this.state.caibUser,
-      imputeData: this.state.imputationRows,
+      caibUser: this.state.name,
     };
     this.setState(
       {
@@ -63,7 +65,10 @@ class App extends Component {
     };
     client.onmessage = (message) => {
       const dataFromServer = JSON.parse(message.data);
+
       const stateToChange = {};
+
+      stateToChange.userMessage = dataFromServer.data.userMessage;
       if (dataFromServer.type === 'userevent') {
         stateToChange.currentUsers = Object.values(dataFromServer.data.users);
       } else if (dataFromServer.type === 'contentchange') {
@@ -71,6 +76,7 @@ class App extends Component {
           dataFromServer.data.editorContent || contentDefaultMessage;
       }
       stateToChange.userActivity = dataFromServer.data.userActivity;
+      console.log(stateToChange.userMessage);
       this.setState({
         ...stateToChange,
       });
@@ -78,15 +84,7 @@ class App extends Component {
   }
 
   handleChange(event) {
-    if (event.target.id === 'password') {
-      this.setState({
-        password: event.target.value,
-      });
-    } else if (event.target.id === 'caibUser') {
-      this.setState({
-        caibUser: event.target.value,
-      });
-    } else {
+    if (event.target.id === 'name') {
       this.setState({
         name: event.target.value,
       });
@@ -106,7 +104,7 @@ class App extends Component {
       .then((response) => response.json())
       .then((response) =>
         this.setState({
-          rows: response,
+          responseSelenium: response,
           hayData: true,
         })
       );
@@ -114,9 +112,12 @@ class App extends Component {
 
   render() {
     const hStyle = {
-      right: '0%',
-      position: 'absolute',
+      right: '5%',
+      position: 'fixed',
       bottom: '0',
+      fontSize: '1.5em',
+      fontFamily: 'Dosis',
+      color: 'white',
     };
     const entreSubmitYLlegaData = this.state.submitDone && !this.state.hayData;
     const cuandoLlegaData = this.state.submitDone && this.state.hayData;
@@ -127,29 +128,14 @@ class App extends Component {
       height: '400px',
     };
 
-    const tableStyle = {
-      background: 'white',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      width: '100%',
-    };
-
-    const imputationRows = (rws) => {
-      this.setState({
-        imputationRows: rws,
-        imputando: true,
-      });
-
-      console.log('vamos a imputar', rws);
-    };
-
     return (
       <div className="App">
         {/* { <ImageAvatars></ImageAvatars> } */}
 
         <div className="board">
-          <h1 className="header">CAIB IMPUTTER</h1>
+          <h1 className="header">React node starter</h1>
+
+          <img src={logoDll}></img>
 
           {entreSubmitYLlegaData && (
             <div className="noselect">
@@ -157,12 +143,16 @@ class App extends Component {
             </div>
           )}
 
+          {cuandoLlegaData && (
+            <div className="noselect">
+              <img src={okGif} alt="loading..." style={gifStyle} />
+            </div>
+          )}
+
           {!this.state.submitDone && (
             <form onSubmit={this.handleSubmit}>
-              <h3 className="noselect">enter intranet credentials</h3>
-
               <label htmlFor="name" className="noselect">
-                name{' '}
+                write whatever :
               </label>
               <input
                 id="name"
@@ -171,54 +161,22 @@ class App extends Component {
                 onChange={this.handleChange}
               />
               <h1></h1>
-
-              <label htmlFor="password" className="noselect">
-                pass{' '}
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={this.state.password}
-                onChange={this.handleChange}
-              />
-              <h1></h1>
-
-              <label htmlFor="password" className="noselect">
-                caibUser{' '}
-              </label>
-              <input
-                id="caibUser"
-                type="text"
-                value={this.state.caibUser}
-                onChange={this.handleChange}
-              />
-              <h1></h1>
-
               <Button type="submit" variant="contained" className="header">
-                INTRANET
+                GOOGLE IT
+              </Button>
+
+              <Button
+                onClick={this.impute}
+                variant="contained"
+                className="header"
+              >
+                SOCKET IT
               </Button>
             </form>
           )}
-
-          <div>
-            {cuandoLlegaData && !imputando && (
-              <DataTable
-                rows={this.state.rows}
-                imputationRows={imputationRows}
-              ></DataTable>
-            )}
-            {/* <DataTable rows={this.state.rows}></DataTable> */}
-          </div>
+          <h1>{this.state.userMessage}</h1>
         </div>
 
-        {imputando && (
-          <CuadroDeImputacion
-            imputationRows={this.state.imputationRows}
-            impute={this.impute}
-          ></CuadroDeImputacion>
-        )}
-
-        <p>{this.state.mensaje}</p>
         <h3 style={hStyle} className="noselect">
           By Jesús de la Lama Amengual
         </h3>
