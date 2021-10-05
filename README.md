@@ -1,5 +1,11 @@
 # Working hours imputter
 
+# Deploy
+Este proyecto está concebido para ser lanzado desde heroku.
+
+Aún así dispone de npm runners con los que se puede desplegar en local.
+
+Solo se necesita NODE
 
 # Idea
 Starter project to deploy fullstack projects on heroku
